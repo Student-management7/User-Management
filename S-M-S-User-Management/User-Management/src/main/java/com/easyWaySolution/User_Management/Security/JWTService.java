@@ -1,30 +1,25 @@
 package com.easyWaySolution.User_Management.Security;
 
-import com.easyWaySolution.User_Management.DTO.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.beans.Encoder;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JWTService {
 
-    private final SecretKey secretKey;
+    private final SecretKey secretKey ;
 
     // Constructor: Generate the key once and store it
     public JWTService() {
-        this.secretKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);  // Generates a 256-bit key
+        //    @Value("${jwt.secret}")
+        String secretKeyBase64 = "U2FsdGVkX19gZWF1Z9cA4O6qR9cB2b8sbT0t3U8IwOQ";
+        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKeyBase64));
     }
 
     // Getter to retrieve the key for signing or verification
