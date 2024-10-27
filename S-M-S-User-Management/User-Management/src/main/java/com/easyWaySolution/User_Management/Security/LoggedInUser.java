@@ -4,9 +4,12 @@ import com.easyWaySolution.User_Management.Entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+
 
 public class LoggedInUser implements UserDetails {
 
@@ -16,6 +19,9 @@ public class LoggedInUser implements UserDetails {
         this.users = users;
     }
 
+    public  Users getUsers(){
+         return users;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

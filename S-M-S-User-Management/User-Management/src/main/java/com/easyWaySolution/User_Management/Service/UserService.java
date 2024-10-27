@@ -8,4 +8,6 @@ public interface UserService {
     String registerUser(UserDto userDto );
 
     String loginUser (UserDto dto) throws BadRequestException;
+
+    String forgetUserPassword(UserDto userDto);
 }

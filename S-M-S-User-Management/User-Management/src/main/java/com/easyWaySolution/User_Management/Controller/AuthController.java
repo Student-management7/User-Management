@@ -25,5 +25,9 @@ public class AuthController {
 
         return ResponseEntity.ok(userService.loginUser(userDto));
     }
+    @PostMapping("/forget-password")
+    public ResponseEntity<String> forgetPassword(@RequestBody UserDto userDto){
+        return ResponseEntity.ok(userService.forgetUserPassword(userDto));
+    }
 
 }

@@ -4,6 +4,9 @@ import com.easyWaySolution.User_Management.DTO.UserDto;
 import com.easyWaySolution.User_Management.Entity.Users;
 import com.easyWaySolution.User_Management.Repository.UsersRepo;
 import com.easyWaySolution.User_Management.Security.JWTService;
+import com.easyWaySolution.User_Management.Security.LoggedInUser;
+import com.easyWaySolution.User_Management.Security.UserDeatilsServices;
+import com.easyWaySolution.User_Management.Service.MailService;
 import com.easyWaySolution.User_Management.Service.UserService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+
 @Service
 public class UserServiceImpl implements UserService {
 
     private BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder(11);
+
+    // Character pool for the password
+    private static final String CHARACTERS =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                    "abcdefghijklmnopqrstuvwxyz" +
+                    "0123456789" +
+                    "!@#$%^&*()-_+=<>?";
+
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     @Autowired
     private UsersRepo usersRepo;
@@ -26,6 +40,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     JWTService jwtService ;
+    @Autowired
+    private UserDeatilsServices userDeatilsServices;
+
+    @Autowired
+    private  MailService mailService;
+
+
 
     @Override
     public String registerUser(UserDto userDto) {
@@ -44,4 +65,31 @@ public class UserServiceImpl implements UserService {
         System.out.println(token);
         return token;
     }
+
+    @Override
+    public String forgetUserPassword(UserDto userDto) {
+
+      LoggedInUser loggedInUser  = (LoggedInUser) userDeatilsServices.loadUserByUsername(userDto.getEmail());
+      Users users = loggedInUser.getUsers();
+      String newPassword = generatePassword();
+      users.setPassword(encoder.encode(newPassword));
+      usersRepo.save(users);
+      mailService.sendMail(users.getEmail() , "New Password " , newPassword);
+        return "New Password sent to your email";
+    }
+
+
+
+    public static String generatePassword() {
+        StringBuilder password = new StringBuilder(10); // Fixed length: 10
+
+        // Generate 10 random characters from the pool
+        for (int i = 0; i < 10; i++) {
+            password.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+
+        return password.toString();
+    }
+
+
 }
