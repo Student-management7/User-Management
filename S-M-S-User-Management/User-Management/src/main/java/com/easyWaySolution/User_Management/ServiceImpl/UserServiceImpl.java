@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
       String newPassword = generatePassword();
       users.setPassword(encoder.encode(newPassword));
       usersRepo.save(users);
-      mailService.sendMail(users.getEmail() , "New Password " , newPassword);
+      mailService.newPasswordMail(users.getEmail() , "New Password " , newPassword , " ... ");
         return "New Password sent to your email";
     }
 

@@ -10,4 +10,8 @@ public interface MailService {
 
     @GetMapping("/sendMail")
      String sendMail(@RequestParam String to, @RequestParam String subject, @RequestParam String text);
+
+    @GetMapping("/send-reset-PasswordMail")
+    public String newPasswordMail(@RequestParam String to, @RequestParam String subject, @RequestParam String text , @RequestParam String name);
+
 }
