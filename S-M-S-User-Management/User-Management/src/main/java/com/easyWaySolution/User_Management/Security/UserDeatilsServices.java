@@ -1,7 +1,7 @@
 package com.easyWaySolution.User_Management.Security;
 
 import com.easyWaySolution.User_Management.Entity.Users;
-import com.easyWaySolution.User_Management.Repository.UsersRepo;
+import com.easyWaySolution.User_Management.FeignService.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDeatilsServices implements UserDetailsService {
 
+
    @Autowired
-   private  UsersRepo usersRepo;
+    DatabaseService databaseService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = usersRepo.findByEmail(username);
+
+        Users user = databaseService.findByMail(username);
 
         if(user == null){
             System.out.println(" user not found ");

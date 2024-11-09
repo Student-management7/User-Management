@@ -2,7 +2,7 @@ package com.easyWaySolution.User_Management.ServiceImpl;
 
 import com.easyWaySolution.User_Management.DTO.UserDto;
 import com.easyWaySolution.User_Management.Entity.Users;
-import com.easyWaySolution.User_Management.Repository.UsersRepo;
+import com.easyWaySolution.User_Management.FeignService.DatabaseService;
 import com.easyWaySolution.User_Management.Security.JWTService;
 import com.easyWaySolution.User_Management.Security.LoggedInUser;
 import com.easyWaySolution.User_Management.Security.UserDeatilsServices;
@@ -32,8 +32,6 @@ public class UserServiceImpl implements UserService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    @Autowired
-    private UsersRepo usersRepo;
 
     @Autowired
     AuthenticationManager authManager;
@@ -46,14 +44,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private  MailService mailService;
 
+    @Autowired
+    DatabaseService databaseService;
+
 
 
     @Override
     public String registerUser(UserDto userDto) {
-        Users users = new Users();
-        users.setEmail(userDto.getEmail());
-        users.setPassword(encoder.encode(userDto.getPassword()));
-        usersRepo.save(users);
+        userDto.setPassword(encoder.encode(userDto.getPassword()));
+        databaseService.saveUser(userDto);
+//        usersRepo.save(users);
         return "Register Successfully !";
     }
 
@@ -70,11 +70,12 @@ public class UserServiceImpl implements UserService {
     public String forgetUserPassword(UserDto userDto) {
 
       LoggedInUser loggedInUser  = (LoggedInUser) userDeatilsServices.loadUserByUsername(userDto.getEmail());
-      Users users = loggedInUser.getUsers();
+
       String newPassword = generatePassword();
-      users.setPassword(encoder.encode(newPassword));
-      usersRepo.save(users);
-      mailService.newPasswordMail(users.getEmail() , "New Password " , newPassword , " ... ");
+        userDto.setPassword(encoder.encode(newPassword));
+      databaseService.updateUser(userDto);
+//      usersRepo.save(users);
+      mailService.newPasswordMail(userDto.getEmail() , "New Password " , newPassword , " ... ");
         return "New Password sent to your email";
     }
 

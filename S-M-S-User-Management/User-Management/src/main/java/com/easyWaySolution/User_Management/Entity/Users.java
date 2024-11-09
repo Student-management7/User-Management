@@ -6,10 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-@Entity
-@Data
-public class Users extends BaseEntity{
+import java.time.LocalDateTime;
+import java.util.UUID;
 
+
+@Data
+public class Users {
+    private UUID id;
+    private LocalDateTime creationDateTime ;
     private String email;
     private String password;
 
