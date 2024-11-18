@@ -14,6 +14,6 @@ public interface UserService {
 
     String forgetUserPassword(UserDto userDto);
 
-    ResponseEntity<String> subUserCreation(String username, SubUserDTO subUserDTO, HttpSession session)
+    ResponseEntity<String> subUserCreation(String username, SubUserDTO subUserDTO, HttpSession session) throws BadRequestException;
 
 }

@@ -9,7 +9,7 @@ import com.easyWaySolution.User_Management.Util.Helper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.ws.rs.BadRequestException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class SubUserController {
     private BCryptPasswordEncoder encoder  = new BCryptPasswordEncoder(11);
 
     @PostMapping("/create/subUser/{username}")
-    public ResponseEntity<String> createSubUser(@PathVariable String username , @RequestBody SubUserDTO subUserDTO , HttpSession session) {
+    public ResponseEntity<String> createSubUser(@PathVariable String username , @RequestBody SubUserDTO subUserDTO , HttpSession session) throws BadRequestException {
 
         ResponseEntity<String> UNAUTHORIZED = userService.subUserCreation(username, subUserDTO, session);
         if (UNAUTHORIZED != null) return UNAUTHORIZED;

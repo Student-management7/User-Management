@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public ResponseEntity<String> subUserCreation(String username, SubUserDTO subUserDTO, HttpSession session) {
+    public ResponseEntity<String> subUserCreation(String username, SubUserDTO subUserDTO, HttpSession session) throws BadRequestException {
         String attribute = (String) session.getAttribute("username");
         if (attribute == null || !attribute.equalsIgnoreCase(username)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid session or session expired");
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         }
         Users existUser =  databaseService.findByMail(subUserDTO.getEmail());
         if(existUser !=null){
-            throw new jakarta.ws.rs.BadRequestException("User already created by that Email");
+            throw new  BadRequestException("User already created by that Email");
         }
 
 
@@ -149,14 +149,13 @@ public class UserServiceImpl implements UserService {
 
         PermissionDto userPermissions = gson.fromJson(userPermissionsJson, PermissionDto.class);
 
-        return checkStudentPermissions(userPermissions.getStudent(), desiredPermissions.getStudent()) &&
+        return userPermissions.isCreateSubUser()&&checkStudentPermissions(userPermissions.getStudent(), desiredPermissions.getStudent()) &&
                 checkAttendancePermissions(userPermissions.getAttendance(), desiredPermissions.getAttendance()) &&
                 checkFeesPermissions(userPermissions.getFees(), desiredPermissions.getFees()) &&
                 checkTeacherPermissions(userPermissions.getTeacher(), desiredPermissions.getTeacher()) &&
                 checkCoursePermissions(userPermissions.getCourse(), desiredPermissions.getCourse()) &&
                 checkExamPermissions(userPermissions.getExam(), desiredPermissions.getExam()) &&
-                checkEventPermissions(userPermissions.getEvent(), desiredPermissions.getEvent())
-                &&userPermissions.isCreateSubUser();
+                checkEventPermissions(userPermissions.getEvent(), desiredPermissions.getEvent());
     }
 
     private boolean checkStudentPermissions(StudentPermissions user, StudentPermissions desired) {

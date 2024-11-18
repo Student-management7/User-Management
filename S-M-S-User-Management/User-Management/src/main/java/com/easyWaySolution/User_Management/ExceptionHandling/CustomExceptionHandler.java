@@ -68,14 +68,13 @@ public class CustomExceptionHandler {
     public ProblemDetail handleGenericException(Exception e) {
         System.out.println(e.getClass());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
-        problemDetail.setProperty("error", "The requested endpoint could not be found: ");
         return problemDetail;
     }
 
-    @ExceptionHandler(com.easyWaySolution.User_Management.Helper.BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public String handleBadRequestException(com.easyWaySolution.User_Management.Helper.BadRequestException ex) {
-        return ex.getMessage();
-    }
+//    @ExceptionHandler(com.easyWaySolution.User_Management.Helper.BadRequestException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseBody
+//    public String handleBadRequestException(com.easyWaySolution.User_Management.Helper.BadRequestException ex) {
+//        return ex.getMessage();
+//    }
 }
