@@ -1,6 +1,6 @@
 package com.easyWaySolution.User_Management.Controller;
 
-import com.easyWaySolution.User_Management.DTO.UserDto;
+import com.easyWaySolution.User_Management.Dto.UserDto;
 import com.easyWaySolution.User_Management.Service.UserService;
 import com.easyWaySolution.User_Management.ServiceImpl.UserServiceImpl;
 import org.apache.coyote.BadRequestException;

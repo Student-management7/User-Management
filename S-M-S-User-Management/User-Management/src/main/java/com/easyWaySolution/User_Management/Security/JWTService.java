@@ -1,8 +1,11 @@
 package com.easyWaySolution.User_Management.Security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -27,8 +30,9 @@ public class JWTService {
         return this.secretKey;
     }
 
-    public String  generateToken(String  userName ){
+    public String  generateToken(String  userName  , String permission){
         Map<String  ,Object> claims = new HashMap<>();
+        claims.put("permission" , permission);
        return Jwts.builder()
                 .claims()
                 .add(claims)
@@ -61,9 +65,38 @@ public class JWTService {
         return  claimsTFunction.apply(claims);
     }
 
-    private Claims extractAllClaim(String token) {
-        return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+    private Claims extractAllClaim(String token)  throws SignatureException{
+
+            return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+
     }
+    public String getPermissionsFromToken(String token) throws SignatureException{
+//        Claims claims = Jwts.parser()
+//                .setSigningKey(getKey())
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+//
+//        return (String) claims.get("permission");
+
+            Claims claims = Jwts.parser()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String premission = (String) claims.get("permission");
+            if (premission ==null){
+                throw new SignatureException("sign");
+            }
+            return  premission;
+
+
+
+    }
+
+
+
 //    public SecretKey getKey()  {
 //        try {
 //            KeyGenerator generator = KeyGenerator.getInstance("HmacSHA256");
@@ -73,9 +106,10 @@ public class JWTService {
 //        }
 //    }
 
-    public boolean validateToken(String token , UserDetails userDetails) {
+    public boolean validateToken(String token ) {
         final  String userName = extractUserName(token);
-        return (userName.equalsIgnoreCase(userDetails.getUsername()) && !isTokenExpired(token));
+
+        return  !isTokenExpired(token);
 
     }
 
