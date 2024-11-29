@@ -9,7 +9,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the jar file into the container
-COPY --from=build /target/Student-Management-System-0.0.1-SNAPSHOT .jar
+COPY --from=build /target/User-Management-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port your app runs on
 EXPOSE 8080
