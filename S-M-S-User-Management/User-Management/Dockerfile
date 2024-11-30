@@ -1,18 +1,19 @@
+# Stage 1: Build the application
 FROM maven:3.8.5-openjdk-17 AS build
-COPY . .
+WORKDIR /app
+COPY pom.xml .  # Copy the Maven project descriptor
+COPY src ./src  # Copy the source code directory
 RUN mvn clean package -DskipTests
 
-# Use a base image with JDK
+# Stage 2: Create the runtime image
 FROM openjdk:17-jdk-slim
-
-# Set the working directory
 WORKDIR /app
 
-# Copy the jar file into the container
+# Copy the JAR file from the build stage
 COPY --from=build /app/target/Student-Management-System-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the port your app runs on
+# Expose the application port
 EXPOSE 8080
 
-# Run the application
+# Set the command to run the application
 CMD ["java", "-jar", "app.jar"]
